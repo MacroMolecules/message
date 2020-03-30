@@ -13,7 +13,9 @@ class _SystemPageState extends State<SystemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('体系'),),
+      body: Center(
+        child: Text('体系'),
+      ),
     );
   }
 }

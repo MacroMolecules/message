@@ -1,122 +1,125 @@
+import 'package:base_library/base_library.dart';
+import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
 import 'package:message/res/strings.dart';
-import 'package:message/ui/pages/drawer_page.dart';
 import 'package:message/ui/pages/dynamic_page.dart';
 import 'package:message/ui/pages/home_page.dart';
-import 'package:message/ui/pages/hot_page.dart';
-import 'package:message/ui/pages/project_page.dart';
+import 'package:message/ui/pages/main_drawer.dart';
+import 'package:message/ui/pages/Project_page.dart';
 import 'package:message/ui/pages/search_page.dart';
 import 'package:message/ui/pages/system_page.dart';
+import 'package:message/utils/navigator_util.dart';
 import 'package:message/utils/utils.dart';
 
-class NavigationPage extends StatefulWidget {
-  @override
-  _NavigationPageState createState() => _NavigationPageState();
-}
-
 class _Page {
-  final String labelId;
+  String labelId;
 
   _Page(this.labelId);
 }
 
-// tab页面列表
-final List<_Page> _tabPages = <_Page>[
+// 主页顶部tab栏list
+List<_Page> _allPages = <_Page>[
   _Page(Ids.titleHome),
   _Page(Ids.titleProject),
-  _Page(Ids.titleHot),
   _Page(Ids.titleDynamic),
   _Page(Ids.titleSystem),
 ];
 
-class _NavigationPageState extends State<NavigationPage> {
+class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // 首页标签组件
+    // 默认选项卡控制器
     return DefaultTabController(
-      length: _tabPages.length,
+      length: _allPages.length,
       child: Scaffold(
-        appBar: AppBar(
-          // 左边头像
+        appBar: MyAppBar(
           leading: Container(
             decoration: BoxDecoration(
+              // 形状 圆形
               shape: BoxShape.circle,
               image: DecorationImage(
+                // 用户头像本地路径
                 image: AssetImage(
                   Utils.getImgPath('ali_connors'),
                 ),
-
               ),
             ),
-            // child: Container(
-            //   width: 5.0,
-            //   height: 5.0,
-            // ),
           ),
-          // 中间
+          // 标题居中
           centerTitle: true,
           title: TabLayout(),
-          // 右边
+          // 顶部右侧搜索组件
           actions: <Widget>[
             IconButton(
+              // 搜索icon
               icon: Icon(Icons.search),
+              // 点击事件
               onPressed: () {
-                SearchPage();
+                // 跳转搜索页面
+                NavigatorUtil.pushPage(context, SearchPage(),
+                    pageName: "SearchPage");
               },
             )
           ],
         ),
+        // tab切换组件
         body: TabBarViewLayout(),
+        // 主页侧边栏
         drawer: Drawer(
-          child: DrawerPage(),
+          child: MainDrawer(),
         ),
       ),
     );
   }
 }
 
-// 顶部中间tab
+// tab布局
 class TabLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabBar(
-      // 是否滚动
+      // 滚动
       isScrollable: true,
-      // 标签间距
+      // 标签填充
       labelPadding: EdgeInsets.all(12.0),
       indicatorSize: TabBarIndicatorSize.label,
-      tabs: _tabPages.map(
-        (_Page page) {
-          return Tab(
-            text: page.labelId,
-          );
-        },
-      ).toList(),
+      // 所有标签
+      tabs: _allPages
+          .map(
+            (_Page page) => Tab(
+              text: IntlUtil.getString(
+                context,
+                page.labelId,
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }
 
-// tab导航切换页面
 class TabBarViewLayout extends StatelessWidget {
   Widget buildTabView(BuildContext context, _Page page) {
+    // 页面标签id
     String labelId = page.labelId;
-    // 开关控件
     switch (labelId) {
+      // 主页
       case Ids.titleHome:
         return HomePage(labelId: labelId);
         break;
+      // 项目页面
       case Ids.titleProject:
         return ProjectPage(labelId: labelId);
         break;
-      case Ids.titleHot:
-        return HotPage(labelId: labelId);
-        break;
+      // 动态页面
       case Ids.titleDynamic:
         return DynamicPage(labelId: labelId);
         break;
+      // 体系页面
       case Ids.titleSystem:
         return SystemPage(labelId: labelId);
         break;
+      // 空
       default:
         return Container();
         break;
@@ -125,9 +128,12 @@ class TabBarViewLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new TabBarView(
-        children: _tabPages.map((_Page page) {
-      return buildTabView(context, page);
-    }).toList());
+    return TabBarView(
+      children: _allPages.map(
+        (_Page page) {
+          return buildTabView(context, page);
+        },
+      ).toList(),
+    );
   }
 }
