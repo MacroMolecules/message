@@ -12,10 +12,14 @@ class Constant {
 
   static const String key_theme_color = 'key_theme_color';
   static const String key_guide = 'key_guide';
-  static const String key_initialize_model = 'key_initialize_models';
+  static const String key_splash_model = 'key_splash_models';
 }
 
-
+class AppConfig {
+  static const String appName = 'message';
+  static const String version = '0.2.5';
+  // static const bool isDebug = Global.kReleaseMode;
+}
 
 class LoadStatus {
   static const int fail = -1;

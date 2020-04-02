@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:message/ui/widget/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+// 加载
 typedef void OnLoadMore(bool up);
+// 在在刷新时回调
 typedef OnRefreshCallback = Future<void> Function({bool isReload});
 
+// 刷新脚手架
 class RefreshScaffold extends StatefulWidget {
-  const RefreshScaffold(
+  RefreshScaffold(
       {Key key,
       this.labelId,
       this.loadStatus,
@@ -34,7 +38,7 @@ class RefreshScaffold extends StatefulWidget {
   }
 }
 
-///   with AutomaticKeepAliveClientMixin
+// 自动激活客户端
 class RefreshScaffoldState extends State<RefreshScaffold>
     with AutomaticKeepAliveClientMixin {
   bool isShowFloatBtn = false;
@@ -42,7 +46,9 @@ class RefreshScaffoldState extends State<RefreshScaffold>
   @override
   void initState() {
     super.initState();
+    // 添加后帧回调
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 添加监听器
       widget.controller.scrollController.addListener(() {
         int offset = widget.controller.scrollController.offset.toInt();
         if (offset < 480 && isShowFloatBtn) {
@@ -56,6 +62,7 @@ class RefreshScaffoldState extends State<RefreshScaffold>
     });
   }
 
+  // 浮动操作按钮
   Widget buildFloatingActionButton() {
     if (widget.controller.scrollController == null ||
         widget.controller.scrollController.offset < 480) {
@@ -63,6 +70,7 @@ class RefreshScaffoldState extends State<RefreshScaffold>
     }
 
     return FloatingActionButton(
+      // 系统默认会给所有FAB使用同一个tag
       heroTag: widget.labelId,
       backgroundColor: Theme.of(context).primaryColor,
       child: Icon(
@@ -87,9 +95,13 @@ class RefreshScaffoldState extends State<RefreshScaffold>
           RefreshIndicator(
             child: SmartRefresher(
               controller: widget.controller,
+              // 下拉刷新
               enablePullDown: false,
+              // 上拉加载
               enablePullUp: widget.enablePullUp,
+              // 滚动
               enableOverScroll: false,
+              // 下拉刷新的回调
               onRefresh: widget.onLoadMore,
               child: widget.child ??
                   ListView.builder(
@@ -97,14 +109,15 @@ class RefreshScaffoldState extends State<RefreshScaffold>
                     itemBuilder: widget.itemBuilder,
                   ),
             ),
+            // 下拉刷新的回调
             onRefresh: widget.onRefresh,
           ),
-          // StatusViews(
-          //   widget.loadStatus,
-          //   onTap: () {
-          //     widget.onRefresh(isReload: true);
-          //   },
-          // ),
+          StatusViews(
+            widget.loadStatus,
+            onTap: () {
+              widget.onRefresh(isReload: true);
+            },
+          ),
         ],
       ),
       floatingActionButton: buildFloatingActionButton(),

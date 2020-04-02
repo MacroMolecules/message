@@ -22,6 +22,7 @@ class _LanguagePageState extends State<LanguagePage> {
   @override
   void initState() {
     super.initState();
+
     // 跟随系统
     _list.add(LanguageModel(Ids.languageAuto, '', ''));
     // 中文
@@ -29,8 +30,10 @@ class _LanguagePageState extends State<LanguagePage> {
     // 英文
     _list.add(LanguageModel(Ids.languageEN, 'en', 'US'));
     // 当前语言
+
     _currentLanguage =
         SpUtil.getObj(Constant.keyLanguage, (v) => LanguageModel.fromJson(v));
+
     if (ObjectUtil.isEmpty(_currentLanguage)) {
       _currentLanguage = _list[0];
     }
@@ -48,7 +51,7 @@ class _LanguagePageState extends State<LanguagePage> {
 
   @override
   Widget build(BuildContext context) {
-    ApplicationBloc bloc = BlocProvider.of<ApplicationBloc>(context);
+    final ApplicationBloc bloc = BlocProvider.of<ApplicationBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -82,50 +85,35 @@ class _LanguagePageState extends State<LanguagePage> {
         ],
       ),
       body: ListView.builder(
-        itemCount: _list.length,
-        itemBuilder: (BuildContext context, int index) {
-          LanguageModel model = _list[index];
-          return ListTile(
-            title: Text(
-              (model.titleId == Ids.languageAuto
-                  ? IntlUtil.getString(
-                      context,
-                      model.titleId,
-                    )
-                  : IntlUtil.getString(
-                      context,
-                      model.titleId,
-                      languageCode: 'zh',
-                      countryCode: 'CH',
-                    )),
-              style: TextStyle(
-                fontSize: 13.0,
+          itemCount: _list.length,
+          itemBuilder: (BuildContext context, int index) {
+            LanguageModel model = _list[index];
+            return ListTile(
+              title: Text(
+                (model.titleId == Ids.languageAuto
+                    ? IntlUtil.getString(context, model.titleId)
+                    : IntlUtil.getString(context, model.titleId,
+                        languageCode: 'zh', countryCode: 'CH')),
+                style: TextStyle(fontSize: 13.0),
               ),
-            ),
-            trailing: Radio(
-              value: true,
-              groupValue: model.isSelected == true,
-              activeColor: Colors.indigoAccent,
-              onChanged: (value) {
-                setState(
-                  () {
-                    _currentLanguage = model;
-                    _updateData();
-                  },
-                );
-              },
-            ),
-            onTap: () {
-              setState(
-                () {
+              trailing: Radio(
+                  value: true,
+                  groupValue: model.isSelected == true,
+                  activeColor: Colors.indigoAccent,
+                  onChanged: (value) {
+                    setState(() {
+                      _currentLanguage = model;
+                      _updateData();
+                    });
+                  }),
+              onTap: () {
+                setState(() {
                   _currentLanguage = model;
                   _updateData();
-                },
-              );
-            },
-          );
-        },
-      ),
+                });
+              },
+            );
+          }),
     );
   }
 }

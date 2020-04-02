@@ -54,7 +54,7 @@ class RecommendPageState extends State<RecommendPage> {
       ),
       body: StreamBuilder(
         // 推荐树流
-        stream: bloc.recommendTreeStream,
+        stream: bloc.tabTreeStream,
         builder:
             (BuildContext context, AsyncSnapshot<List<TreeModel>> snapshot) {
           if (snapshot.data == null) {

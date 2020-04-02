@@ -4,7 +4,10 @@ import 'package:message/data/protocol/modeels.dart';
 import 'package:message/utils/navigator_util.dart';
 
 class ComArrowItem extends StatelessWidget {
-  ComArrowItem(this.model, {Key key}) : super(key: key);
+  ComArrowItem(
+    this.model, {
+    Key key,
+  }) : super(key: key);
   final ComModel model;
 
   @override

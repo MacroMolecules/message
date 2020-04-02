@@ -7,7 +7,7 @@ import 'package:message/utils/navigator_util.dart';
 import 'package:message/utils/utils.dart';
 
 class ProjectItem extends StatelessWidget {
-  ProjectItem(
+  const ProjectItem(
     this.model, {
     this.labelId,
     Key key,
@@ -21,21 +21,12 @@ class ProjectItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        NavigatorUtil.pushWeb(
-          context,
-          title: model.title,
-          url: model.link,
-          isHome: isHome,
-        );
+        NavigatorUtil.pushWeb(context,
+            title: model.title, url: model.link, isHome: isHome);
       },
       child: Container(
         height: 160.0,
-        padding: EdgeInsets.only(
-          left: 16,
-          top: 16,
-          right: 16,
-          bottom: 10,
-        ),
+        padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 10),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -62,6 +53,12 @@ class ProjectItem extends StatelessWidget {
                 Gaps.vGap5,
                 Row(
                   children: <Widget>[
+                    LikeBtn(
+                      labelId: labelId,
+                      id: model.originId ?? model.id,
+                      isLike: model.collect,
+                    ),
+                    Gaps.hGap10,
                     Text(
                       model.author,
                       style: TextStyles.listExtra,

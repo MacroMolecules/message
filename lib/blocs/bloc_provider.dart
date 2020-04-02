@@ -10,6 +10,7 @@ abstract class BlocBase {
   void dispose();
 }
 
+// 提供bloc
 class BlocProvider<T extends BlocBase> extends StatefulWidget {
   BlocProvider({
     Key key,

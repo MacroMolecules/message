@@ -16,6 +16,191 @@ import 'package:message/utils/utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 
+// bool isHomeInit = true;
+// class HomePage extends StatelessWidget {
+//   const HomePage({Key key, this.labelId}) : super(key: key);
+
+//   final String labelId;
+
+//   Widget buildBanner(BuildContext context, List<BannerModel> list) {
+//     if (ObjectUtil.isEmpty(list)) {
+//       return Container(height: 0.0);
+//     }
+//     return AspectRatio(
+//       aspectRatio: 16.0 / 9.0,
+//       child: Swiper(
+//         indicatorAlignment: AlignmentDirectional.topEnd,
+//         circular: true,
+//         interval: Duration(seconds: 5),
+//         indicator: NumberSwiperIndicator(),
+//         children: list.map((model) {
+//           return InkWell(
+//             onTap: () {
+//               NavigatorUtil.pushWeb(context,
+//                   title: model.title, url: model.url);
+//             },
+//             child: CachedNetworkImage(
+//               fit: BoxFit.fill,
+//               imageUrl: model.imagePath,
+//               placeholder: (context, url) => ProgressWidget(),
+//               errorWidget: (context, url, error) => Icon(Icons.error),
+//             ),
+//           );
+//         }).toList(),
+//       ),
+//     );
+//   }
+
+//   Widget buildProject(BuildContext context, List<ProjectModel> list) {
+//     if (ObjectUtil.isEmpty(list)) {
+//       return Container(height: 0.0);
+//     }
+//     List<Widget> _children = list.map((model) {
+//       return MessageItem(
+//         model,
+//         isHome: true,
+//       );
+//     }).toList();
+//     List<Widget> children = List();
+//     children.add(HomePageItem(
+//       leftIcon: Icons.book,
+//       titleId: Ids.recProject,
+//       onTap: () {
+//         NavigatorUtil.pushTabPage(context,
+//             labelId: Ids.titleProjectTree, titleId: Ids.titleProjectTree);
+//       },
+//     ));
+//     children.addAll(_children);
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       mainAxisSize: MainAxisSize.min,
+//       children: children,
+//     );
+//   }
+
+//   Widget buildWxArticle(BuildContext context, List<ProjectModel> list) {
+//     if (ObjectUtil.isEmpty(list)) {
+//       return Container(height: 0.0);
+//     }
+//     List<Widget> _children = list.map((model) {
+//       return MessageItem(
+//         model,
+//         isHome: true,
+//       );
+//     }).toList();
+//     List<Widget> children = List();
+//     children.add(HomePageItem(
+//       titleColor: Colors.green,
+//       leftIcon: Icons.library_books,
+//       titleId: Ids.recWxArticle,
+//       onTap: () {
+//         NavigatorUtil.pushTabPage(context,
+//             labelId: Ids.titleWxArticleTree, titleId: Ids.titleWxArticleTree);
+//       },
+//     ));
+//     children.addAll(_children);
+//     return Column(
+//       mainAxisSize: MainAxisSize.min,
+//       children: children,
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     LogUtil.e("HomePage build......");
+//     RefreshController _controller = RefreshController();
+//     final MainBloc bloc = BlocProvider.of<MainBloc>(context);
+//     bloc.homeEventStream.listen((event) {
+//       if (labelId == event.labelId) {
+//         _controller.sendBack(false, event.status);
+//       }
+//     });
+
+//     if (isHomeInit) {
+//       LogUtil.e("HomePage init......");
+//       isHomeInit = false;
+//       Observable.just(1).delay(Duration(milliseconds: 500)).listen((_) {
+//         bloc.onRefresh(labelId: labelId);
+//         bloc.getHotRecItem();
+//         bloc.getVersion();
+//       });
+//     }
+
+//     return StreamBuilder(
+//         stream: bloc.bannerStream,
+//         builder:
+//             (BuildContext context, AsyncSnapshot<List<BannerModel>> snapshot) {
+//           return RefreshScaffold(
+//             labelId: labelId,
+//             loadStatus: Utils.getLoadStatus(snapshot.hasError, snapshot.data),
+//             controller: _controller,
+//             enablePullUp: false,
+//             onRefresh: ({bool isReload}) {
+//               return bloc.onRefresh(labelId: labelId);
+//             },
+//             child: ListView(
+//               children: <Widget>[
+//                 StreamBuilder(
+//                     stream: bloc.recItemStream,
+//                     builder: (BuildContext context,
+//                         AsyncSnapshot<ComModel> snapshot) {
+//                       ComModel model = bloc.hotRecModel;
+//                       if (model == null) {
+//                         return Container(
+//                           height: 0.0,
+//                         );
+//                       }
+//                       int status = Utils.getUpdateStatus(model.version);
+//                       return HomePageItem(
+//                         titleColor: Colors.redAccent,
+//                         title: status == 0 ? model.content : model.title,
+//                         extra: status == 0 ? 'Go' : "",
+//                         onTap: () {
+//                           if (status == 0) {
+//                             NavigatorUtil.pushPage(
+//                                 context, RecHotPage(title: model.content),
+//                                 pageName: model.content);
+//                           } else {
+//                             NavigatorUtil.launchInBrowser(model.url,
+//                                 title: model.title);
+//                           }
+//                         },
+//                       );
+//                     }),
+//                 buildBanner(context, snapshot.data),
+//                 StreamBuilder(
+//                     stream: bloc.recProjectStream,
+//                     builder: (BuildContext context,
+//                         AsyncSnapshot<List<ProjectModel>> snapshot) {
+//                       return buildProject(context, snapshot.data);
+//                     }),
+//                 StreamBuilder(
+//                     stream: bloc.recWxArticleStream,
+//                     builder: (BuildContext context,
+//                         AsyncSnapshot<List<ProjectModel>> snapshot) {
+//                       return buildWxArticle(context, snapshot.data);
+//                     }),
+//               ],
+//             ),
+//           );
+//         });
+//   }
+// }
+
+// class NumberSwiperIndicator extends SwiperIndicator {
+//   @override
+//   Widget build(BuildContext context, int index, int itemCount) {
+//     return Container(
+//       decoration: BoxDecoration(
+//           color: Colors.black45, borderRadius: BorderRadius.circular(20.0)),
+//       margin: EdgeInsets.only(top: 10.0, right: 5.0),
+//       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+//       child: Text("${++index}/$itemCount",
+//           style: TextStyle(color: Colors.white70, fontSize: 11.0)),
+//     );
+//   }
+// }
+
 bool isHomeInit = true;
 
 class HomePage extends StatelessWidget {
@@ -108,7 +293,7 @@ class HomePage extends StatelessWidget {
     if (ObjectUtil.isEmpty(list)) {
       return Container(height: 0.0);
     }
-    // 微信信息流列表
+    // 信息流列表
     List<Widget> _children = list.map((model) {
       return ArticleItem(
         model,
@@ -116,18 +301,16 @@ class HomePage extends StatelessWidget {
       );
     }).toList();
     List<Widget> children = List();
-    // 向信息流List添加一个List,拼接成一个新的List
-    children.add(
-      HeaderItem(
-        titleColor: Colors.green,
-        leftIcon: Icons.library_books,
-        titleId: Ids.recWxArticle,
-        onTap: () {
-          NavigatorUtil.pushRecommendPage(context,
-              labelId: Ids.titleWxArticleTree, titleId: Ids.titleWxArticleTree);
-        },
-      ),
-    );
+    // 向List 添加一个List,拼接成一个新的List
+    children.add(HeaderItem(
+      titleColor: Colors.green,
+      leftIcon: Icons.library_books,
+      titleId: Ids.recWxArticle,
+      onTap: () {
+        NavigatorUtil.pushRecommendPage(context,
+            labelId: Ids.titleWxArticleTree, titleId: Ids.titleWxArticleTree);
+      },
+    ));
     // 向List 添加一个List,拼接成一个新的List
     children.addAll(_children);
     // 返回List
@@ -157,17 +340,9 @@ class HomePage extends StatelessWidget {
     // 主页初始化
     if (isHomeInit) {
       isHomeInit = false;
-      Observable.just(1)
-      // 延迟响应
-          .delay(
-        Duration(
-          // 持续10秒
-          milliseconds: 10,
-        ),
-      )
-          .listen((_) {
+      // 延迟响应 持续100毫秒
+      Observable.just(1).delay(Duration(milliseconds: 100)).listen((_) {
         bloc.onRefresh(labelId: labelId);
-        bloc.getHotRecItem();
       });
     }
 
@@ -176,7 +351,7 @@ class HomePage extends StatelessWidget {
       stream: bloc.bannerStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<BannerModel>> snapshot) {
-            // 刷新
+        // 刷新
         return RefreshScaffold(
           labelId: labelId,
           // 获取负载状态

@@ -7,12 +7,12 @@ import 'package:message/res/strings.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RecommendBloc implements BlocBase {
-  BehaviorSubject<List<TreeModel>> _recommendTree =
+  BehaviorSubject<List<TreeModel>> _tabTree =
       BehaviorSubject<List<TreeModel>>();
 
-  Sink<List<TreeModel>> get _recommendTreeSink => _recommendTree.sink;
+  Sink<List<TreeModel>> get _tabTreeSink => _tabTree.sink;
 
-  Stream<List<TreeModel>> get recommendTreeStream => _recommendTree.stream;
+  Stream<List<TreeModel>> get tabTreeStream => _tabTree.stream;
 
   List<TreeModel> treeList;
 
@@ -53,19 +53,19 @@ class RecommendBloc implements BlocBase {
 
   Future getProjectTree(String labelId) {
     return messageRepository.getProjectTree().then((list) {
-      _recommendTreeSink.add(UnmodifiableListView<TreeModel>(list));
+      _tabTreeSink.add(UnmodifiableListView<TreeModel>(list));
     });
   }
 
   Future getWxArticleTree(String labelId) {
     return messageRepository.getWxArticleChapters().then((list) {
-      _recommendTreeSink.add(UnmodifiableListView<TreeModel>(list));
+      _tabTreeSink.add(UnmodifiableListView<TreeModel>(list));
     });
   }
 
   Future getSystemTree(String labelId) {
     return Future.delayed(Duration(milliseconds: 500)).then((_) {
-      _recommendTreeSink.add(UnmodifiableListView<TreeModel>(treeList));
+      _tabTreeSink.add(UnmodifiableListView<TreeModel>(treeList));
     });
   }
 
@@ -76,14 +76,14 @@ class RecommendBloc implements BlocBase {
       }
       treeList.clear();
       treeList.addAll(list);
-      _recommendTreeSink.add(UnmodifiableListView<TreeModel>(treeList));
+      _tabTreeSink.add(UnmodifiableListView<TreeModel>(treeList));
     }).catchError((_) {
     });
   }
 
   @override
   void dispose() {
-    _recommendTree.close();
+    _tabTree.close();
   }
 }
 

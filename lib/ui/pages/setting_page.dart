@@ -10,14 +10,13 @@ import 'package:message/res/strings.dart';
 import 'package:message/ui/pages/language_page.dart';
 import 'package:message/utils/navigator_util.dart';
 
+// 设置
 class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ApplicationBloc bloc = BlocProvider.of<ApplicationBloc>(context);
-    LanguageModel languageModel = SpUtil.getObj(
-      Constant.keyLanguage,
-      (v) => LanguageModel.fromJson(v),
-    );
+    LanguageModel languageModel =
+        SpUtil.getObj(Constant.keyLanguage, (v) => LanguageModel.fromJson(v));
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -45,24 +44,21 @@ class SettingPage extends StatelessWidget {
             children: <Widget>[
               // 包装主题样式
               Wrap(
-                children: themeColorMap.keys.map(
-                  (String key) {
-                    Color value = themeColorMap[key];
-                    return InkWell(
-                      onTap: () {
-                        SpUtil.putString(Constant.key_theme_color, key);
-                        // 发送事件到bloc
-                        bloc.sendAppEvent(Constant.type_sys_update);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(5.0),
-                        width: 36.0,
-                        height: 36.0,
-                        color: value,
-                      ),
-                    );
-                  },
-                ).toList(),
+                children: themeColorMap.keys.map((String key) {
+                  Color value = themeColorMap[key];
+                  return InkWell(
+                    onTap: () {
+                      SpUtil.putString(Constant.key_theme_color, key);
+                      bloc.sendAppEvent(Constant.type_sys_update);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(5.0),
+                      width: 36.0,
+                      height: 36.0,
+                      color: value,
+                    ),
+                  );
+                }).toList(),
               )
             ],
           ),
@@ -86,15 +82,14 @@ class SettingPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  languageModel == null
-                      ? IntlUtil.getString(context, Ids.languageAuto)
-                      : IntlUtil.getString(context, languageModel.titleId,
-                          languageCode: 'zh', countryCode: 'CH'),
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colours.gray_99,
-                  ),
-                ),
+                    languageModel == null
+                        ? IntlUtil.getString(context, Ids.languageAuto)
+                        : IntlUtil.getString(context, languageModel.titleId,
+                            languageCode: 'zh', countryCode: 'CH'),
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colours.gray_99,
+                    )),
                 Icon(Icons.keyboard_arrow_right)
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:base_library/base_library.dart';
 import 'package:flutter/material.dart';
 import 'package:message/data/protocol/modeels.dart';
+import 'package:message/ui/widget/widgets.dart';
 import 'package:message/utils/navigator_util.dart';
 import 'package:message/utils/utils.dart';
 
@@ -12,7 +13,6 @@ class ArticleItem extends StatelessWidget {
     this.labelId,
     this.isHome,
   }) : super(key: key);
-
   final ProjectModel model;
   final String labelId;
   final bool isHome;
@@ -29,49 +29,48 @@ class ArticleItem extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.only(
-          left: 16,
-          top: 16,
-          right: 16,
-          bottom: 10,
-        ),
+        padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 10),
         child: Row(
           children: <Widget>[
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    model.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyles.listTitle,
-                  ),
-                  Gaps.vGap10,
-                  Text(
-                    model.desc,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyles.listContent,
-                  ),
-                  Gaps.vGap5,
-                  Row(
-                    children: <Widget>[
-                      Gaps.hGap10,
-                      Text(
-                        model.author,
-                        style: TextStyles.listExtra,
-                      ),
-                      Gaps.hGap10,
-                      Text(
-                        Utils.getTimeLine(context, model.publishTime),
-                        style: TextStyles.listExtra,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  model.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyles.listTitle,
+                ),
+                Gaps.vGap10,
+                Text(
+                  model.desc,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyles.listContent,
+                ),
+                Gaps.vGap5,
+                Row(
+                  children: <Widget>[
+                    LikeBtn(
+                      labelId: labelId,
+                      id: model.originId ?? model.id,
+                      isLike: model.collect,
+                    ),
+                    Gaps.hGap10,
+                    Text(
+                      model.author,
+                      style: TextStyles.listExtra,
+                    ),
+                    Gaps.hGap10,
+                    Text(
+                      Utils.getTimeLine(context, model.publishTime),
+                      style: TextStyles.listExtra,
+                    ),
+                  ],
+                )
+              ],
+            )),
             Container(
               alignment: Alignment.center,
               margin: EdgeInsets.only(left: 12.0),
@@ -84,14 +83,11 @@ class ArticleItem extends StatelessWidget {
                   child: Text(
                     model.superChapterName ?? "文章",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11.0,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 11.0),
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
         decoration: BoxDecoration(

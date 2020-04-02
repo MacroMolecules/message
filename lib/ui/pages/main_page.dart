@@ -5,20 +5,20 @@ import 'package:message/res/strings.dart';
 import 'package:message/ui/pages/dynamic_page.dart';
 import 'package:message/ui/pages/home_page.dart';
 import 'package:message/ui/pages/main_drawer.dart';
-import 'package:message/ui/pages/Project_page.dart';
+import 'package:message/ui/pages/project_page.dart';
 import 'package:message/ui/pages/search_page.dart';
 import 'package:message/ui/pages/system_page.dart';
 import 'package:message/utils/navigator_util.dart';
 import 'package:message/utils/utils.dart';
 
 class _Page {
-  String labelId;
+  final String labelId;
 
   _Page(this.labelId);
 }
 
 // 主页顶部tab栏list
-List<_Page> _allPages = <_Page>[
+final List<_Page> _allPages = <_Page>[
   _Page(Ids.titleHome),
   _Page(Ids.titleProject),
   _Page(Ids.titleDynamic),
@@ -28,7 +28,7 @@ List<_Page> _allPages = <_Page>[
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // 默认选项卡控制器
+    // 标签控制器
     return DefaultTabController(
       length: _allPages.length,
       child: Scaffold(
@@ -73,24 +73,17 @@ class MainPage extends StatelessWidget {
   }
 }
 
-// tab布局
 class TabLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabBar(
-      // 滚动
       isScrollable: true,
-      // 标签填充
       labelPadding: EdgeInsets.all(12.0),
       indicatorSize: TabBarIndicatorSize.label,
-      // 所有标签
       tabs: _allPages
           .map(
             (_Page page) => Tab(
-              text: IntlUtil.getString(
-                context,
-                page.labelId,
-              ),
+              text: IntlUtil.getString(context, page.labelId),
             ),
           )
           .toList(),
@@ -107,19 +100,19 @@ class TabBarViewLayout extends StatelessWidget {
       case Ids.titleHome:
         return HomePage(labelId: labelId);
         break;
-      // 项目页面
+        // 项目页面
       case Ids.titleProject:
         return ProjectPage(labelId: labelId);
         break;
-      // 动态页面
+        // 动态页面
       case Ids.titleDynamic:
         return DynamicPage(labelId: labelId);
         break;
-      // 体系页面
+        // 体系页面
       case Ids.titleSystem:
         return SystemPage(labelId: labelId);
         break;
-      // 空
+        // 空
       default:
         return Container();
         break;

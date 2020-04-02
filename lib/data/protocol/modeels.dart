@@ -77,7 +77,7 @@ class ProjectModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"id\":$id");
     sb.write(",\"originId\":$originId");
     sb.write(",\"title\":\"$title\"");
@@ -116,7 +116,7 @@ class BannerModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"title\":\"$title\"");
     sb.write(",\"id\":$id");
     sb.write(",\"url\":\"$url\"");
@@ -138,7 +138,7 @@ class TreeModel extends ISuspensionBean {
         children = (json['children'] as List)
             ?.map((e) => e == null
                 ? null
-                : new TreeModel.fromJson(e as Map<String, dynamic>))
+                : TreeModel.fromJson(e as Map<String, dynamic>))
             ?.toList();
 
   Map<String, dynamic> toJson() => {
@@ -149,7 +149,7 @@ class TreeModel extends ISuspensionBean {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"name\":\"$name\"");
     sb.write(",\"id\":$id");
     sb.write(",\"children\":$children");
@@ -249,7 +249,7 @@ class UserModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"email\":\"$email\"");
     sb.write(",\"icon\":\"$icon\"");
     sb.write(",\"id\":$id");
@@ -284,7 +284,7 @@ class LanguageModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"titleId\":\"$titleId\"");
     sb.write(",\"languageCode\":\"$languageCode\"");
     sb.write(",\"countryCode\":\"$countryCode\"");
@@ -293,15 +293,15 @@ class LanguageModel {
   }
 }
 
-class InitializeModel {
+class SplashModel {
   String title;
   String content;
   String url;
   String imgUrl;
 
-  InitializeModel({this.title, this.content, this.url, this.imgUrl});
+  SplashModel({this.title, this.content, this.url, this.imgUrl});
 
-  InitializeModel.fromJson(Map<String, dynamic> json)
+  SplashModel.fromJson(Map<String, dynamic> json)
       : title = json['title'],
         content = json['content'],
         url = json['url'],
@@ -316,7 +316,7 @@ class InitializeModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"title\":\"$title\"");
     sb.write(",\"content\":\"$content\"");
     sb.write(",\"url\":\"$url\"");
@@ -349,7 +349,7 @@ class VersionModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"title\":\"$title\"");
     sb.write(",\"content\":\"$content\"");
     sb.write(",\"url\":\"$url\"");
@@ -410,7 +410,7 @@ class ComModel {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = StringBuffer('{');
     sb.write("\"version\":\"$version\"");
     sb.write(",\"title\":\"$title\"");
     sb.write(",\"content\":\"$content\"");

@@ -12,25 +12,18 @@ import 'package:message/common/sp_helper.dart';
 import 'package:message/data/protocol/modeels.dart';
 import 'package:message/res/colors.dart';
 import 'package:message/res/strings.dart';
-import 'package:message/ui/pages/main_page.dart';
 import 'package:message/ui/pages/initialize_page.dart';
+import 'package:message/ui/pages/main_page.dart';
 
 void main() {
   // 全局变量
-  Global.init(
-    () {
-      runApp(
-        BlocProvider<ApplicationBloc>(
-          // bloc
-          bloc: ApplicationBloc(),
-          child: BlocProvider(
-            child: MyApp(),
-            bloc: MainBloc(),
-          ),
-        ),
-      );
-    },
-  );
+  Global.init(() {
+    runApp(BlocProvider<ApplicationBloc>(
+      // bloc
+      bloc: ApplicationBloc(),
+      child: BlocProvider(child: MyApp(), bloc: MainBloc()),
+    ));
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -77,7 +70,6 @@ class MyAppState extends State<MyApp> {
     _loadLocale();
   }
 
-  // Bloc监听
   void _initListener() {
     final ApplicationBloc bloc = BlocProvider.of<ApplicationBloc>(context);
     bloc.appEventStream.listen((value) {
@@ -85,7 +77,6 @@ class MyAppState extends State<MyApp> {
     });
   }
 
-  // 加载本地化
   void _loadLocale() {
     setState(() {
       // 获取本地语言
@@ -115,12 +106,11 @@ class MyAppState extends State<MyApp> {
       routes: {
         BaseConstant.routeMain: (ctx) => MainPage(),
       },
-      // 初始化主页
       home: InitializePage(),
       // 主题
       theme: ThemeData.light().copyWith(
         // 主色
-        primaryColor: _themeColor,
+        primaryColor: Colors.blue,
         // 强调色
         accentColor: _themeColor,
         indicatorColor: Colors.white,

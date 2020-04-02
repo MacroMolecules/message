@@ -1,9 +1,12 @@
+
 import 'dart:collection';
+
 import 'package:azlistview/azlistview.dart';
 import 'package:base_library/base_library.dart';
 import 'package:message/blocs/bloc_provider.dart';
 import 'package:message/blocs/event.dart';
 import 'package:message/data/protocol/modeels.dart';
+import 'package:message/data/repository/collect_repository.dart';
 import 'package:message/data/repository/message_repository.dart';
 import 'package:message/res/strings.dart';
 import 'package:message/utils/http_utils.dart';
@@ -43,7 +46,6 @@ class MainBloc implements BlocBase {
   // 微信文章Bloc流
   Stream<List<ProjectModel>> get recWxArticleStream => _recWxArticle.stream;
 
-
   BehaviorSubject<List<ProjectModel>> _project =
       BehaviorSubject<List<ProjectModel>>();
 
@@ -53,7 +55,6 @@ class MainBloc implements BlocBase {
 
   List<ProjectModel> _projectList;
   int _projectPage = 0;
-
 
   // 动态页面
   BehaviorSubject<List<ProjectModel>> _dynamic =
@@ -66,7 +67,6 @@ class MainBloc implements BlocBase {
   List<ProjectModel> _dynamicList;
   int _dynamicPage = 0;
 
-
   BehaviorSubject<List<TreeModel>> _tree = BehaviorSubject<List<TreeModel>>();
 
   Sink<List<TreeModel>> get _treeSink => _tree.sink;
@@ -74,15 +74,6 @@ class MainBloc implements BlocBase {
   Stream<List<TreeModel>> get treeStream => _tree.stream;
 
   List<TreeModel> _treeList;
-
-
-  BehaviorSubject<VersionModel> _version = BehaviorSubject<VersionModel>();
-
-  Sink<VersionModel> get _versionSink => _version.sink;
-
-  Stream<VersionModel> get versionStream => _version.stream.asBroadcastStream();
-
-  VersionModel _versionModel;
 
   BehaviorSubject<StatusEvent> _homeEvent = BehaviorSubject<StatusEvent>();
 
@@ -97,8 +88,6 @@ class MainBloc implements BlocBase {
 
   Stream<ComModel> get recItemStream => _recItem.stream.asBroadcastStream();
 
-  ComModel hotRecModel;
-
   BehaviorSubject<List<ComModel>> _recList = BehaviorSubject<List<ComModel>>();
 
   Sink<List<ComModel>> get _recListSink => _recList.sink;
@@ -106,10 +95,8 @@ class MainBloc implements BlocBase {
   Stream<List<ComModel>> get recListStream =>
       _recList.stream.asBroadcastStream();
 
-  List<ComModel> hotRecList;
-
-
   MessageRepository messageRepository = MessageRepository();
+  CollectRepository _collectRepository = CollectRepository();
   HttpUtils httpUtils = HttpUtils();
 
   // 获取数据
@@ -124,7 +111,7 @@ class MainBloc implements BlocBase {
       case Ids.titleProject:
         return getArticleListProject(labelId, page);
         break;
-      // 事件
+      // 动态
       case Ids.titleDynamic:
         return getArticleList(labelId, page);
         break;
@@ -155,9 +142,6 @@ class MainBloc implements BlocBase {
       default:
         break;
     }
-    LogUtil.e("onLoadMore labelId: $labelId" +
-        "   _page: $_page" +
-        "   _projectPage: $_projectPage");
     return getData(labelId: labelId, page: _page);
   }
 
@@ -165,7 +149,6 @@ class MainBloc implements BlocBase {
   Future onRefresh({String labelId, bool isReload}) {
     switch (labelId) {
       case Ids.titleHome:
-        getHotRecItem();
         break;
       case Ids.titleProject:
         _projectPage = 0;
@@ -178,7 +161,6 @@ class MainBloc implements BlocBase {
       default:
         break;
     }
-    LogUtil.e("onRefresh labelId: $labelId" + "   _projectPage: $_projectPage");
     return getData(labelId: labelId, page: 0);
   }
 
@@ -195,7 +177,7 @@ class MainBloc implements BlocBase {
   }
 
   Future getRecProject(String labelId) async {
-    ComReq _comReq = new ComReq(402);
+    ComReq _comReq = ComReq(402);
     messageRepository.getProjectList(data: _comReq.toJson()).then((list) {
       if (list.length > 6) {
         list = list.sublist(0, 6);
@@ -217,14 +199,14 @@ class MainBloc implements BlocBase {
   Future getArticleListProject(String labelId, int page) {
     return messageRepository.getArticleListProject(page).then((list) {
       if (_projectList == null) {
-        _projectList = new List();
+        _projectList = List();
       }
       if (page == 0) {
         _projectList.clear();
       }
       _projectList.addAll(list);
       _projectSink.add(UnmodifiableListView<ProjectModel>(_projectList));
-      homeEventSink.add(new StatusEvent(
+      homeEventSink.add(StatusEvent(
           labelId,
           ObjectUtil.isEmpty(list)
               ? RefreshStatus.noMore
@@ -234,21 +216,21 @@ class MainBloc implements BlocBase {
         _project.sink.addError("error");
       }
       _projectPage--;
-      homeEventSink.add(new StatusEvent(labelId, RefreshStatus.failed));
+      homeEventSink.add(StatusEvent(labelId, RefreshStatus.failed));
     });
   }
 
   Future getArticleList(String labelId, int page) {
     return messageRepository.getArticleList(page: page).then((list) {
       if (_dynamicList == null) {
-        _dynamicList = new List();
+        _dynamicList = List();
       }
       if (page == 0) {
         _dynamicList.clear();
       }
       _dynamicList.addAll(list);
       _dynamicSink.add(UnmodifiableListView<ProjectModel>(_dynamicList));
-      homeEventSink.add(new StatusEvent(
+      homeEventSink.add(StatusEvent(
           labelId,
           ObjectUtil.isEmpty(list)
               ? RefreshStatus.noMore
@@ -258,14 +240,14 @@ class MainBloc implements BlocBase {
         _dynamic.sink.addError("error");
       }
       _dynamicPage--;
-      homeEventSink.add(new StatusEvent(labelId, RefreshStatus.failed));
+      homeEventSink.add(StatusEvent(labelId, RefreshStatus.failed));
     });
   }
 
   Future getTree(String labelId) {
     return messageRepository.getTree().then((list) {
       if (_treeList == null) {
-        _treeList = new List();
+        _treeList = List();
       }
 
       for (int i = 0, length = list.length; i < length; i++) {
@@ -281,7 +263,7 @@ class MainBloc implements BlocBase {
       _treeList.clear();
       _treeList.addAll(list);
       _treeSink.add(UnmodifiableListView<TreeModel>(_treeList));
-      homeEventSink.add(new StatusEvent(
+      homeEventSink.add(StatusEvent(
           labelId,
           ObjectUtil.isEmpty(list)
               ? RefreshStatus.noMore
@@ -290,29 +272,43 @@ class MainBloc implements BlocBase {
       if (ObjectUtil.isEmpty(_projectList)) {
         _tree.sink.addError("error");
       }
-      homeEventSink.add(new StatusEvent(labelId, RefreshStatus.failed));
+      homeEventSink.add(StatusEvent(labelId, RefreshStatus.failed));
     });
   }
 
-  Future getHotRecItem() async {
-    httpUtils.getRecItem().then((model) {
-      hotRecModel = model;
-      _recItemSink.add(hotRecModel);
-    });
+  // 收藏
+  void doCollection(String labelId, int id, bool isCollect) {
+    if (isCollect) {
+      _collectRepository.collect(id).then((bool suc) {
+        onCollectRefresh(labelId, id, isCollect);
+      });
+    } else {
+      _collectRepository.unCollect(id).then((bool suc) {
+        onCollectRefresh(labelId, id, isCollect);
+      });
+    }
   }
 
-  Future getHotRecList(String labelId) async {
-    httpUtils.getRecList().then((list) {
-      hotRecList = list;
-      _recListSink.add(UnmodifiableListView<ComModel>(list));
-      homeEventSink.add(new StatusEvent(
-          labelId,
-          ObjectUtil.isEmpty(list)
-              ? RefreshStatus.noMore
-              : RefreshStatus.idle));
-    }).catchError((_) {
-      homeEventSink.add(new StatusEvent(labelId, RefreshStatus.failed));
-    });
+  // 刷新收藏
+  void onCollectRefresh(String labelId, int id, bool isCollect) {
+    if (ObjectUtil.isNotEmpty(_projectList)) {
+      _projectList?.forEach((model) {
+        if (id == model.id) {
+          model.collect = isCollect;
+        }
+        return model;
+      });
+      _projectSink.add(UnmodifiableListView<ProjectModel>(_projectList));
+    }
+    if (ObjectUtil.isNotEmpty(_dynamicList)) {
+      _dynamicList?.forEach((model) {
+        if (id == model.id) {
+          model.collect = isCollect;
+        }
+        return model;
+      });
+      _dynamicSink.add(UnmodifiableListView<ProjectModel>(_dynamicList));
+    }
   }
 
   @override
@@ -324,7 +320,6 @@ class MainBloc implements BlocBase {
     _dynamic.close();
     _tree.close();
     _homeEvent.close();
-    _version.close();
     _recItem.close();
     _recList.close();
   }

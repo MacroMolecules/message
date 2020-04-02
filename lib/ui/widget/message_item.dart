@@ -3,7 +3,7 @@ import 'package:message/data/protocol/modeels.dart';
 import 'package:message/utils/navigator_util.dart';
 
 class MessageItem extends StatelessWidget {
-  const MessageItem(
+  MessageItem(
     this.model, {
     this.labelId,
     Key key,

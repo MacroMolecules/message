@@ -2,7 +2,7 @@ import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
 import 'package:message/res/strings.dart';
 
-// 关于页面
+// 关于
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

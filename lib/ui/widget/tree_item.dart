@@ -6,7 +6,10 @@ import 'package:message/utils/navigator_util.dart';
 import 'package:message/utils/utils.dart';
 
 class TreeItem extends StatelessWidget {
-  TreeItem(this.model, {Key key}) : super(key: key);
+  TreeItem(
+    this.model, {
+    Key key,
+  }) : super(key: key);
 
   final TreeModel model;
 
@@ -47,6 +50,7 @@ class _ChipsTile extends StatelessWidget {
   final String label;
   final List<Widget> children;
 
+  // 包装一个列表
   @override
   Widget build(BuildContext context) {
     List<Widget> cardChildren = <Widget>[
@@ -58,14 +62,12 @@ class _ChipsTile extends StatelessWidget {
     ];
     cardChildren.add(
       Wrap(
-        children: children.map(
-          (Widget chip) {
-            return Padding(
-              padding: EdgeInsets.all(3.0),
-              child: chip,
-            );
-          },
-        ).toList(),
+        children: children.map((Widget chip) {
+          return Padding(
+            padding: EdgeInsets.all(3.0),
+            child: chip,
+          );
+        }).toList(),
       ),
     );
 

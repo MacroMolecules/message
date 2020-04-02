@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:message/common/common.dart';
 import 'package:message/res/colors.dart';
+import 'package:message/res/strings.dart';
 
 class Utils {
   // 本地img路径
@@ -10,7 +11,7 @@ class Utils {
     return 'assets/images/$name.$format';
   }
 
-  // 拼音
+  // 拼音排序
   static String getPinyin(String str) {
     return PinyinHelper.getShortPinyin(str).substring(0, 1).toUpperCase();
   }
@@ -38,11 +39,9 @@ class Utils {
     return HSVColor.fromAHSV(1.0, hue, 0.4, 0.90).toColor();
   }
 
-  // 获取时间线
   static String getTimeLine(BuildContext context, int timeMillis) {
     return TimelineUtil.format(
       timeMillis,
-      // 本地化
       locale: Localizations.localeOf(context).languageCode,
       dayFormat: DayFormat.Common,
     );
@@ -77,5 +76,13 @@ class Utils {
     } else {
       return LoadStatus.success;
     }
+  }
+
+  // 是否需要登陆
+  static bool isNeedLogin(String pageId) {
+    if (pageId == Ids.titleCollection) {
+      return true;
+    }
+    return false;
   }
 }

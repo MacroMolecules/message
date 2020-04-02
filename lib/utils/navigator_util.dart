@@ -5,6 +5,7 @@ import 'package:message/blocs/bloc_provider.dart';
 import 'package:message/blocs/recommend_bloc.dart';
 import 'package:message/data/protocol/modeels.dart';
 import 'package:message/ui/pages/recommend_page.dart';
+import 'package:message/ui/pages/user_login_page.dart';
 import 'package:message/ui/widget/web_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,12 +14,14 @@ class NavigatorUtil {
     BuildContext context,
     Widget page, {
     String pageName,
+    bool needLogin = false,
   }) {
     if (context == null || page == null) return;
-    Navigator.push(
-      context,
-      CupertinoPageRoute<void>(builder: (ctx) => page),
-    );
+    if (needLogin && !Util.isLogin()) {
+      pushPage(context, UserLoginPage());
+      return;
+    }
+    Navigator.push(context, CupertinoPageRoute<void>(builder: (ctx) => page));
   }
 
   static void pushWeb(BuildContext context,

@@ -5,6 +5,7 @@ import 'package:message/data/protocol/modeels.dart';
 import 'package:message/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
+// 初始化
 class InitializePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -24,8 +25,9 @@ class InitializePageState extends State<InitializePage> {
   List<Widget> _bannerList = List();
 
   int _status = 0;
+  int _count = 3;
 
-  InitializeModel _initializeModel;
+  SplashModel _splashModel;
 
   @override
   void initState() {
@@ -40,7 +42,7 @@ class InitializePageState extends State<InitializePage> {
         SpUtil.putBool(Constant.key_guide, false);
         _initBanner();
       } else {
-        _initInitialize();
+        _initSplash();
       }
     });
   }
@@ -79,8 +81,8 @@ class InitializePageState extends State<InitializePage> {
     }
   }
 
-  void _initInitialize() {
-    if (_initializeModel == null) {
+  void _initSplash() {
+    if (_splashModel == null) {
       _goMain();
     }
   }
@@ -99,5 +101,4 @@ class InitializePageState extends State<InitializePage> {
       ),
     );
   }
-
 }

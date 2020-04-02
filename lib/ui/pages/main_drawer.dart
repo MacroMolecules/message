@@ -1,6 +1,10 @@
 import 'package:base_library/base_library.dart';
 import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
+import 'package:message/blocs/bloc_provider.dart';
+import 'package:message/blocs/collect_bloc.dart';
+import 'package:message/blocs/event.dart';
+import 'package:message/common/common.dart';
 import 'package:message/data/protocol/modeels.dart';
 import 'package:message/res/strings.dart';
 import 'package:message/ui/pages/about_page.dart';
@@ -10,6 +14,7 @@ import 'package:message/ui/pages/share_page.dart';
 import 'package:message/utils/navigator_util.dart';
 import 'package:message/utils/utils.dart';
 
+// 主页侧边栏
 class MainDrawer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -18,12 +23,7 @@ class MainDrawer extends StatefulWidget {
 }
 
 class PageInfo {
-  PageInfo(
-    this.titleId,
-    this.iconData,
-    this.page, [
-    this.withScaffold = true,
-  ]);
+  PageInfo(this.titleId, this.iconData, this.page, [this.withScaffold = true]);
 
   String titleId;
   IconData iconData;
@@ -33,6 +33,8 @@ class PageInfo {
 
 class _MainDrawerState extends State<MainDrawer> {
   List<PageInfo> _pageInfo = List();
+  PageInfo loginOut =
+      PageInfo(Ids.titleSignOut, Icons.power_settings_new, null);
   String _userName;
 
   // 初始化侧边栏
@@ -42,10 +44,10 @@ class _MainDrawerState extends State<MainDrawer> {
     // 收藏页面
     _pageInfo.add(
       PageInfo(
-        Ids.titleCollect,
+        Ids.titleCollection,
         Icons.collections,
         CollectPage(
-          labelId: Ids.titleCollect,
+          labelId: Ids.titleCollection,
         ),
       ),
     );
@@ -75,9 +77,59 @@ class _MainDrawerState extends State<MainDrawer> {
     );
   }
 
+  void _showLoginOutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        // 注销弹窗
+        return AlertDialog(
+          content: Text(
+            "确定退出吗？",
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                IntlUtil.getString(ctx, Ids.cancel),
+                style: TextStyles.listExtra2,
+              ),
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                IntlUtil.getString(ctx, Ids.confirm),
+                style: TextStyles.listExtra,
+              ),
+              onPressed: () {
+                SpUtil.remove(BaseConstant.keyAppToken);
+                Event.sendAppEvent(context, Constant.type_sys_update);
+                Navigator.pop(ctx);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    _userName = "Sky24n";
+    if (Util.isLogin()) {
+      if (!_pageInfo.contains(loginOut)) {
+        _pageInfo.add(loginOut);
+        UserModel userModel = SpUtil.getObj(
+            BaseConstant.keyUserModel, (v) => UserModel.fromJson(v));
+        _userName = userModel?.username ?? "";
+      }
+    } else {
+      _userName = "Sky24n";
+      if (_pageInfo.contains(loginOut)) {
+        _pageInfo.remove(loginOut);
+      }
+    }
+
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -100,7 +152,6 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        // 本地图片
                         image: DecorationImage(
                           image: AssetImage(
                             Utils.getImgPath('ali_connors'),
@@ -143,11 +194,26 @@ class _MainDrawerState extends State<MainDrawer> {
                     IntlUtil.getString(context, pageInfo.titleId),
                   ),
                   onTap: () {
-                    NavigatorUtil.pushPage(
-                      context,
-                      pageInfo.page,
-                      pageName: pageInfo.titleId,
-                    );
+                    if (pageInfo.titleId == Ids.titleSignOut) {
+                      _showLoginOutDialog(context);
+                    } else if (pageInfo.titleId == Ids.titleCollection) {
+                      NavigatorUtil.pushPage(
+                        context,
+                        BlocProvider<CollectBloc>(
+                          child: pageInfo.page,
+                          bloc: CollectBloc(),
+                        ),
+                        pageName: pageInfo.titleId,
+                        needLogin: Utils.isNeedLogin(pageInfo.titleId),
+                      );
+                    } else {
+                      NavigatorUtil.pushPage(
+                        context,
+                        pageInfo.page,
+                        pageName: pageInfo.titleId,
+                        needLogin: Utils.isNeedLogin(pageInfo.titleId),
+                      );
+                    }
                   },
                 );
               },

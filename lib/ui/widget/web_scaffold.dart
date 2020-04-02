@@ -1,12 +1,10 @@
-import 'package:base_library/base_library.dart';
 import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
-import 'package:message/utils/navigator_util.dart';
-import 'package:share/share.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+// wab界面
 class WebScaffold extends StatefulWidget {
-  const WebScaffold({
+  WebScaffold({
     Key key,
     this.title,
     this.titleId,
@@ -39,6 +37,7 @@ class WebScaffoldState extends State<WebScaffold> {
         // 居中
         centerTitle: true,
       ),
+
       // 页面具体内容
       body: WebView(
         // web控制器

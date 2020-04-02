@@ -2,6 +2,7 @@ import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
 import 'package:message/res/strings.dart';
 
+// 分享
 class SharePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
